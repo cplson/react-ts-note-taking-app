@@ -5,7 +5,8 @@ import {useLocalStorage} from "./useLocalStorage";
 import {v4 as uuidV4} from "uuid";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import { NewNote } from './NewNote'
+import { NewNote } from './NewNote';
+import {NoteList} from './NoteList';
 
 // CUSTOM TYPE DEFINITIONS
 export type Note = {
@@ -87,7 +88,7 @@ function App() {
     <Container className="my-4">
       {/* Define all routes using react-router-dom */}
       <Routes>
-        <Route path="/" element={<h1>Home</h1>} />
+        <Route path="/" element={<NoteList availableTags={tags}/>} />
         <Route path="/new" 
           element={<NewNote onSubmit={onCreateNote} 
           onAddTag={addTag}
