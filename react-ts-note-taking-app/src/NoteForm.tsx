@@ -2,7 +2,7 @@ import { Form, Stack, Row, Col, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { FormEvent, useRef, useState } from "react";
 import CreatableReactSelect from "react-select/creatable";
-import {v4 as uuidV4} from "uuid";
+import { v4 as uuidV4 } from "uuid";
 import { NoteData, Tag } from './App'
 
 
@@ -14,11 +14,13 @@ type NoteFormProps = {
     onSubmit: (data: NoteData) => void
     onAddTag: (tag: Tag) => void
     availableTags: Tag[]
-}
+} & Partial<NoteData>
+// Partial means NoteData is optional
 
 // NoteForm component takes in a prop:
 //  - onSubmit - a function of custom type NoteFormProps
-export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
+export function NoteForm({ onSubmit, onAddTag, availableTags, title = "",
+    markdown = "", tags = [] }: NoteFormProps) {
 
     // useRefs are local state hooks that will only reload the component when changed
     // titleRef is a useref hook that takes in a HTMLInputElement
@@ -27,7 +29,7 @@ export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
     const markdownRef = useRef<HTMLTextAreaElement>(null)
 
     // useState hook that takes in an array of our custom Tag type
-    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
 
     const navigate = useNavigate()
 
@@ -46,7 +48,7 @@ export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
         // which tells the compiler to ignore the possibility of
         // of the variable being null or undefined
 
-        
+
         navigate("..");
     }
 
@@ -61,7 +63,7 @@ export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
                             {/* New Note Title - field is required */}
                             <Form.Group controlId="title">
                                 <Form.Label>Title</Form.Label>
-                                <Form.Control ref={titleRef} required />
+                                <Form.Control ref={titleRef} required defaultValue={title} />
                             </Form.Group>
                         </Col>
                         <Col>
@@ -72,37 +74,41 @@ export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
                                 CreatableReactSelect comes from react-select
                                 -isMulti allows for multiple Tags 
                             */}
-                                <CreatableReactSelect 
-                                onCreateOption={label => {
-                                    const newTag = { id: uuidV4(), label}
-                                    // add new tag to local storage list
-                                    onAddTag(newTag);
-                                    // add newTag to local state array
-                                    setSelectedTags(prev => [...prev, newTag]);
-                                }}
-                                // the value of the component is the 
-                                // list of tags from local state reflected by options
-                                value={selectedTags.map(tag => {
-                                    return {label: tag.label, value: tag.id}
-                                })} 
-                                // options is the array of options that populate the select menu
-                                options={availableTags.map(tag => {
-                                    return { label: tag.label, value: tag.id}
-                                })}
-                                // onChange, update local state
-                                onChange={tags => {
-                                    setSelectedTags(tags.map(tag => {
-                                        return {label: tag.label, id: tag.value}
-                                    }))
-                                }}
-                                isMulti />
+                                <CreatableReactSelect
+                                    onCreateOption={label => {
+                                        const newTag = { id: uuidV4(), label }
+                                        // add new tag to local storage list
+                                        onAddTag(newTag);
+                                        // add newTag to local state array
+                                        setSelectedTags(prev => [...prev, newTag]);
+                                    }}
+                                    // the value of the component is the 
+                                    // list of tags from local state reflected by options
+                                    value={selectedTags.map(tag => {
+                                        return { label: tag.label, value: tag.id }
+                                    })}
+                                    // options is the array of options that populate the select menu
+                                    options={availableTags.map(tag => {
+                                        return { label: tag.label, value: tag.id }
+                                    })}
+                                    // onChange, update local state
+                                    onChange={tags => {
+                                        setSelectedTags(tags.map(tag => {
+                                            return { label: tag.label, id: tag.value }
+                                        }))
+                                    }}
+                                    isMulti />
                             </Form.Group>
                         </Col>
                     </Row>
                     {/* New Note Body - field is required as textarea */}
                     <Form.Group controlId="markdown">
                         <Form.Label>Body</Form.Label>
-                        <Form.Control required as="textarea" ref={markdownRef} rows={15} />
+                        <Form.Control
+                            defaultValue={markdown}
+                            required as="textarea"
+                            ref={markdownRef} rows={15}
+                        />
                     </Form.Group>
                     <Stack direction="horizontal" gap={2} className="justify-content-end" >
                         <Button type="submit" variant="primary">

@@ -20,7 +20,7 @@ You can find the tutorial for yourself <a href="https://www.youtube.com/watch?v=
     npm install
     npm run dev
 3. Finally install dependencies, run:
-    npm i react-bootstrap bootstrap react-router-dom react-select
+    npm i react-bootstrap bootstrap react-router-dom react-select react-markdown
 
     note: when the tutorial asks to install uuid npm i uuid did not work
         fix: npm i --save-dev @types/uuid

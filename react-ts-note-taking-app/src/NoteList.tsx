@@ -1,4 +1,4 @@
-import { Form, Stack, Row, Col, Button, Card, Badge } from "react-bootstrap";
+import { Form, Stack, Row, Col, Button, Card, Badge, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactSelect from 'react-select';
 import { useState, useMemo } from 'react';
@@ -13,11 +13,21 @@ type SimplifiedNote = {
 type NoteListProps = {
     availableTags: Tag[]
     notes: SimplifiedNote[]
+    onDeleteTag: (id: string) => void
+    onUpdateTag: (id: string, label: string) => void
+}
+type EditTagsModalProps = {
+    show: boolean
+    availableTags: Tag[]
+    handleClose: () => void
+    onDeleteTag: (id: string) => void
+    onUpdateTag: (id: string, label: string) => void
 }
 
-export function NoteList({ availableTags, notes }: NoteListProps) {
+export function NoteList({ availableTags, notes, onUpdateTag, onDeleteTag }: NoteListProps) {
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [title, setTitle] = useState("");
+    const [editTagsModalIsOpen, setEditTagsModalIsOpen] = useState(false);
 
     // this useMemo just filters our notList from NoteListProps
     // that matches the search criteria for both title and selectedTags
@@ -46,9 +56,11 @@ export function NoteList({ availableTags, notes }: NoteListProps) {
                 <Col xs="auto">
                     <Stack gap={2} direction="horizontal">
                         <Link to="/new">
-                            <Button variant="primary">Primary</Button>
+                            <Button variant="primary">Create</Button>
                         </Link>
-                        <Button variant="outline-secondary">Edit Tags</Button>
+                        <Button
+                            onClick={() => setEditTagsModalIsOpen(true)}
+                            variant="outline-secondary">Edit Tags</Button>
                     </Stack>
                 </Col>
             </Row>
@@ -95,6 +107,13 @@ export function NoteList({ availableTags, notes }: NoteListProps) {
                     </Col>
                 ))}
             </Row>
+            <EditTagsModal
+                onUpdateTag={onUpdateTag}
+                onDeleteTag={onDeleteTag}
+                show={editTagsModalIsOpen}
+                handleClose={() => setEditTagsModalIsOpen(false)}
+                availableTags={availableTags}
+            />
         </>
     )
 }
@@ -113,7 +132,7 @@ function NoteCard({ id, title, tags }: SimplifiedNote) {
             <Card.Body>
                 <Stack gap={2} className="align-items-center
                     justify-content-center h-100">
-                        {/* fs-5: font-size: 5px */}
+                    {/* fs-5: font-size: 5px */}
                     <span className="fs-5">{title}</span>
                     {/* if note has tags, map them */}
                     {tags.length > 0 && (
@@ -128,5 +147,38 @@ function NoteCard({ id, title, tags }: SimplifiedNote) {
                 </Stack>
             </Card.Body>
         </Card>
+    )
+}
+
+function EditTagsModal({ availableTags, handleClose, show, onDeleteTag, onUpdateTag }: EditTagsModalProps) {
+    return (
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Edit Tags</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    <Stack gap={2}>
+                        {availableTags.map(tag => (
+                            <Row key={tag.id}>
+                                <Col>
+                                    <Form.Control type="text" value={tag.label}
+                                        onChange={e => onUpdateTag(tag.id, e.target.value)}
+                                    />
+                                </Col>
+                                <Col xs="auto">
+                                    <Button
+                                        variant="outline-danger"
+                                        onClick={() => onDeleteTag(tag.id)}
+                                    >
+                                        &times;
+                                    </Button>
+                                </Col>
+                            </Row>
+                        ))}
+                    </Stack>
+                </Form>
+            </Modal.Body>
+        </Modal >
     )
 }
