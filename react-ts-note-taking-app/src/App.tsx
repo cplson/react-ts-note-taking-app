@@ -88,7 +88,7 @@ function App() {
     <Container className="my-4">
       {/* Define all routes using react-router-dom */}
       <Routes>
-        <Route path="/" element={<NoteList availableTags={tags}/>} />
+        <Route path="/" element={<NoteList notes={notesWithTags} availableTags={tags}/>} />
         <Route path="/new" 
           element={<NewNote onSubmit={onCreateNote} 
           onAddTag={addTag}

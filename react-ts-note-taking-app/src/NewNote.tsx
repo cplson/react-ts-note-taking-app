@@ -1,6 +1,8 @@
 import { NoteForm } from "./NoteForm"
 import { NoteData, Tag } from "./App"
 
+// in order to recieve the NewNoteProps as a prop
+// we need to define the custom type
 type NewNoteProps = {
     onSubmit: (data: NoteData) => void
     onAddTag: (tag: Tag) => void

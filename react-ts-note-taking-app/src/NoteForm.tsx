@@ -20,19 +20,31 @@ type NoteFormProps = {
 //  - onSubmit - a function of custom type NoteFormProps
 export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
 
+    // useRefs are local state hooks that will only reload the component when changed
+    // titleRef is a useref hook that takes in a HTMLInputElement
+    // markdownRef is a useref hook that takes in a HTMLTextAreaElement
     const titleRef = useRef<HTMLInputElement>(null)
     const markdownRef = useRef<HTMLTextAreaElement>(null)
+
+    // useState hook that takes in an array of our custom Tag type
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+
     const navigate = useNavigate()
+
 
     function handleSubmit(e: FormEvent) {
         e.preventDefault();
 
+        // userefvalue.current.value refers to the 
+        // current value present inside the inputs
         onSubmit({
             title: titleRef.current!.value,
             markdown: markdownRef.current!.value,
             tags: selectedTags
         })
+        // NOTE: the ! is a NON-NULL ASSERTION OPERATOR
+        // which tells the compiler to ignore the possibility of
+        // of the variable being null or undefined
 
         
         navigate("..");
@@ -63,15 +75,21 @@ export function NoteForm({ onSubmit, onAddTag, availableTags }: NoteFormProps) {
                                 <CreatableReactSelect 
                                 onCreateOption={label => {
                                     const newTag = { id: uuidV4(), label}
+                                    // add new tag to local storage list
                                     onAddTag(newTag);
+                                    // add newTag to local state array
                                     setSelectedTags(prev => [...prev, newTag]);
                                 }}
+                                // the value of the component is the 
+                                // list of tags from local state reflected by options
                                 value={selectedTags.map(tag => {
                                     return {label: tag.label, value: tag.id}
                                 })} 
+                                // options is the array of options that populate the select menu
                                 options={availableTags.map(tag => {
                                     return { label: tag.label, value: tag.id}
                                 })}
+                                // onChange, update local state
                                 onChange={tags => {
                                     setSelectedTags(tags.map(tag => {
                                         return {label: tag.label, id: tag.value}
