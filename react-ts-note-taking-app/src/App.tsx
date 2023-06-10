@@ -7,6 +7,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { NewNote } from './NewNote';
 import {NoteList} from './NoteList';
+import { NoteLayout } from './NoteLayout';
+import { Note } from './Note';
 
 // CUSTOM TYPE DEFINITIONS
 export type Note = {
@@ -94,8 +96,8 @@ function App() {
           onAddTag={addTag}
           availableTags={tags}
           />} />
-        <Route path="/:id">
-          <Route index element={<h1>Show</h1>} />
+        <Route path="/:id" element={<NoteLayout notes={notesWithTags} />}>
+          <Route index element={<Note />} />
           <Route path="edit" element={<h1>Edit</h1>} />
         </Route>
         {/* For any endpoint that does not match a defined 
