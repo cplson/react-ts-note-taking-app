@@ -99,19 +99,28 @@ export function NoteList({ availableTags, notes }: NoteListProps) {
     )
 }
 
+// NoteCard component for each note to be rendered
 function NoteCard({ id, title, tags }: SimplifiedNote) {
     return (
+        // clicking on the Note, navigates you to this cards details
         <Card as={Link} to={`/${id}`}
+            // card is set to height: 100px
+            // text-reset sets link color to its parent elements style
+            // text-decoration-none removes the underline for the link
+            // styles.card applies the styles from NoteList.module.css
             className={`h-100 text-reset text-decoration-none ${styles.card}`}
         >
             <Card.Body>
                 <Stack gap={2} className="align-items-center
                     justify-content-center h-100">
+                        {/* fs-5: font-size: 5px */}
                     <span className="fs-5">{title}</span>
+                    {/* if note has tags, map them */}
                     {tags.length > 0 && (
                         <Stack gap={1} direction="horizontal"
                             className="justify-content-center flex-wrap">
                             {tags.map(tag => (
+                                // text-truncate ensures no text overflow
                                 <Badge className="text-truncate" key={tag.id}>{tag.label}</Badge>
                             ))}
                         </Stack>
