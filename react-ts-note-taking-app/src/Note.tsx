@@ -6,7 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 type NoteProps = {
     onDelete: (id: string) => void
 }
+
 export function Note({onDelete}: NoteProps) {
+    // gets note from NoteLayout
     const note = useNote();
     const navigate = useNavigate();
 
@@ -15,6 +17,7 @@ export function Note({onDelete}: NoteProps) {
             <Row className="align-items-center mb-4">
                 <Col>
                     <h1>{note.title}</h1>
+                    {/* if the Note has any tags, displays them */}
                     {note.tags.length > 0 && (
                         <Stack gap={1} direction="horizontal"
                             className="flex-wrap">
@@ -27,14 +30,18 @@ export function Note({onDelete}: NoteProps) {
                 </Col>
                 <Col xs="auto">
                     <Stack gap={2} direction="horizontal">
+                        {/* EDIT */}
                         <Link to={`/${note.id}/edit`}>
                             <Button variant="primary">Edit</Button>
                         </Link>
+                        {/* DELETE */}
                         <Button onClick={() => {
                             onDelete(note.id);
+                            // Navigate to home (NoteList)
                             navigate("/");
                         }}
                         variant="outline-danger">Delete</Button>
+                        {/* BACK to home (NoteList) */}
                         <Link to="/">
                             <Button variant="outline-secondary">Back</Button>
                         </Link>
@@ -42,6 +49,7 @@ export function Note({onDelete}: NoteProps) {
                     </Stack>
                 </Col>
             </Row>
+            {/* Display Note body */}
             <ReactMarkdown>{note.markdown}</ReactMarkdown>
         </>
     )

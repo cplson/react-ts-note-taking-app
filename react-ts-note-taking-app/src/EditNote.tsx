@@ -9,6 +9,7 @@ type EditNoteProps = {
     onAddTag: (tag: Tag) => void
     availableTags: Tag[]
 }
+
 export function EditNote({ onSubmit, onAddTag, availableTags }: EditNoteProps) {
     // gets the context (note) from NoteLayout
     const note = useNote();
